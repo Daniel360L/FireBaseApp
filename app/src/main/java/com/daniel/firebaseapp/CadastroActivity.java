@@ -8,7 +8,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class CadastroActivity extends AppCompatActivity {
     private Button btncadastrar;
@@ -31,13 +33,13 @@ public class CadastroActivity extends AppCompatActivity {
     public  void cadastrar(){
         String email =  editEmail.getText().toString();
         String senha =  editSenha.getText().toString();
-        if(email.isEmpty() || senha.isEmpty()){
+        String usuario = ediNome.getText().toString();
+        if(email.isEmpty() || senha.isEmpty() || usuario.isEmpty()){
             Toast.makeText(this,"preencha os campos",Toast.LENGTH_SHORT).show();
             return;
         }
         //criar um ususario
-        Task t = auth.createUserWithEmailAndPassword(email,senha);
-
+        Task<AuthResult> t = auth.createUserWithEmailAndPassword(email,senha); // encadeamento // metodo so recebe email e senha
         t.addOnCompleteListener(task -> {
             //listener executado com sucesso ou fracasso
             if(task.isSuccessful()){
@@ -46,6 +48,12 @@ public class CadastroActivity extends AppCompatActivity {
             }else {
                 Toast.makeText(getApplicationContext(),"ERRO",Toast.LENGTH_SHORT).show();
             }
+        });
+        t.addOnSuccessListener(authResult -> {
+            //setando nome do usuario
+            //request para mudar o nome do usuario
+            UserProfileChangeRequest update = new UserProfileChangeRequest.Builder().setDisplayName(usuario).build();
+            authResult.getUser().updateProfile(update);
         });
 
     }
