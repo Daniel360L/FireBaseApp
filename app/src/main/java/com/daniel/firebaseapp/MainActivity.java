@@ -12,7 +12,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class MainActivity extends AppCompatActivity {
  private FirebaseAuth auth = FirebaseAuth.getInstance();
- private Button btnlogout;
+ private Button btnlogout, btnstorage;
  private TextView textUsuario;
 
     @Override
@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         btnlogout = findViewById(R.id.main_btn_logout);
         textUsuario = findViewById(R.id.main_textUsuario);
+        btnstorage = findViewById(R.id.main_btn_storage);
 
         btnlogout.setOnClickListener(v -> {
             auth.signOut();
@@ -30,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
         textemail.setText(auth.getCurrentUser().getEmail());
         textUsuario.setText(auth.getCurrentUser().getDisplayName());
 
-
+        btnstorage.setOnClickListener(v ->{
+            Intent intent = new Intent(getApplicationContext(),StorageActivity.class);
+            startActivity(intent);
+        });
 
 
 
