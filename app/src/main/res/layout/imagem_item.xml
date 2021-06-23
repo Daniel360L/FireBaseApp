@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardElevation="6dp"
-    android:layout_margin="6dp"
+    app:cardElevation="8dp"
+    android:layout_margin="8dp"
     android:id="@+id/cardView"
     >
     <LinearLayout
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/imagemItem"
+            android:id="@+id/imagemItem_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -26,10 +26,11 @@
         </TextView>
 
         <ImageView
+            android:id="@+id/image_item_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@color/colorAccent"/>
+            android:src="@color/colorAccent" />
     </LinearLayout>
 
 

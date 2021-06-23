@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.daniel.firebaseapp.model.Upload;
+import com.daniel.firebaseapp.util.LoadingDialog;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -68,6 +70,9 @@ public class StorageActivity extends AppCompatActivity {
     }
 
     private void uploadImagemUri() {
+        LoadingDialog dialog = new LoadingDialog(this,R.layout.custom_dialog);
+        dialog.startLoadingDialog();
+
         String tipo = getFileExtension(imagemUri);
         //referencia no firebase
         Date d = new Date();
@@ -88,7 +93,12 @@ public class StorageActivity extends AppCompatActivity {
                 String id = refUpload.getKey();
                 Upload upload = new Upload(id,nome,uri.toString());
                 //salavando upload
-                refUpload.setValue(upload);
+                refUpload.setValue(upload)
+                .addOnSuccessListener(aVoid -> {
+                    dialog.dismissDialog();//retirando dialog da tela
+                    finish();
+                })
+                ;
 
             });
 
