@@ -74,9 +74,10 @@ public class StorageActivity extends AppCompatActivity {
         dialog.startLoadingDialog();
 
         String tipo = getFileExtension(imagemUri);
-        //referencia no firebase
+
         Date d = new Date();
         String nome = editnome.getText().toString();
+        //referencia no firebase
         StorageReference imagemRef = storage.getReference().child("imagens/"+nome+"-"+d.getTime()+"."+tipo);
 
         imagemRef.putFile(imagemUri)
@@ -143,7 +144,7 @@ public class StorageActivity extends AppCompatActivity {
     //fazer upload de uma imagem convertida para bytes
     public void uploadImagemByte(){
         byte[] data = convertByte(imageView);
-        //criar uma referencai aimgaem no storage
+        //criar uma referencai da imgaem no storage
         StorageReference imagemRef = storage.getReference().child("imagens/02.jpeg");
         //upload da imagem
         imagemRef.putBytes(data)
