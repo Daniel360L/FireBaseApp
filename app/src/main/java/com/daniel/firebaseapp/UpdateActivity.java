@@ -4,10 +4,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,9 +17,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.daniel.firebaseapp.model.Upload;
+import com.daniel.firebaseapp.util.LoadingDialog;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.Date;
 
 public class UpdateActivity extends AppCompatActivity {
     private Button btnupload,btnGaleria;
@@ -74,12 +80,56 @@ public class UpdateActivity extends AppCompatActivity {
     }
     public void atualizarImagem(){
         //deletar a imagem antiga no storage
+        storage.getReferenceFromUrl(upload.getUrl()).delete();
         //fazer upload da imagem atualizada no storage
+        uploadImagemUri();
         //listener para recuperar a url da imagem no storage
         //atualizar no database
 
-
     }
+
+    private void uploadImagemUri() {
+        LoadingDialog dialog = new LoadingDialog(this,R.layout.custom_dialog);
+        dialog.startLoadingDialog();
+
+        String tipo = getFileExtension(imagemUri);
+
+        Date d = new Date();
+        String nome = editnome.getText().toString();
+        //referencia no firebase
+        StorageReference imagemRef = storage.getReference().child("imagens/"+nome+"-"+d.getTime()+"."+tipo);
+
+        imagemRef.putFile(imagemUri)//upload da imagem
+                .addOnSuccessListener(taskSnapshot -> {
+                    Toast.makeText(this,"Upload feito som sucesso",Toast.LENGTH_SHORT).show();
+
+                    //inserir dados da imagem no Realtimedatabse
+                    //para inserir no database e necessario a url da imagem por essa ra~zao o código abaixo
+                    //getDownloadUrl() pega a url do que acabou de ser manda pra nuvem
+                    taskSnapshot.getStorage().getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                            //atualizar objeto upload
+                            upload.setUrl(uri.toString());
+                            upload.setNomeImagem(editnome.getText().toString());
+                            database.child(upload.getId()).setValue(upload).addOnSuccessListener(aVoid -> {
+                               dialog.dismissDialog();
+                               finish();
+                            });
+
+                            });
+
+
+                })
+                .addOnFailureListener(e ->{
+                    e.printStackTrace();
+                });
+    };
+
+    private String getFileExtension(Uri imagemUri) {
+            //retorna o tipo
+            ContentResolver cr = getContentResolver();
+            return MimeTypeMap.getSingleton().getExtensionFromMimeType(cr.getType(imagemUri));
+        }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

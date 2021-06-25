@@ -80,7 +80,7 @@ public class StorageActivity extends AppCompatActivity {
         //referencia no firebase
         StorageReference imagemRef = storage.getReference().child("imagens/"+nome+"-"+d.getTime()+"."+tipo);
 
-        imagemRef.putFile(imagemUri)
+        imagemRef.putFile(imagemUri)//upload da imagem
         .addOnSuccessListener(taskSnapshot -> {
          Toast.makeText(this,"Upload feito som sucesso",Toast.LENGTH_SHORT).show();
 
