@@ -7,15 +7,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.daniel.firebaseapp.model.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CadastroActivity extends AppCompatActivity {
     private Button btncadastrar;
     private EditText ediNome, editEmail,editSenha;
-
+    private DatabaseReference database = FirebaseDatabase.getInstance().getReference("users");
+    //criando o nó "banco" no firebase
     private FirebaseAuth auth  = FirebaseAuth.getInstance(); // instancia um objeto uma unica vez // referencia a autenticação
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,10 @@ public class CadastroActivity extends AppCompatActivity {
             //setando nome do usuario
             //request para mudar o nome do usuario
             UserProfileChangeRequest update = new UserProfileChangeRequest.Builder().setDisplayName(usuario).build();
+            //inserir no database
+            User u = new User(authResult.getUser().getUid(),email,usuario);
+            database.child(u.getId()).setValue(u);
+
             authResult.getUser().updateProfile(update);
         });
 

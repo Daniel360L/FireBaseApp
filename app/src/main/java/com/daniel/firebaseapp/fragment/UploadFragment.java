@@ -38,12 +38,11 @@ import java.util.ArrayList;
  */
 public class UploadFragment extends Fragment {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private Button btnlogout, btnstorage;
     private TextView textUsuario;
-    private DatabaseReference database  = FirebaseDatabase.getInstance().getReference("uploads");
+    private DatabaseReference database  = FirebaseDatabase.getInstance()
+            .getReference("uploads").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
     private ArrayList<Upload> listaUp = new ArrayList<>();
-
     private RecyclerView recyclerView;
     private ImageAdapter imageAdapter;
     public UploadFragment() {
@@ -56,10 +55,7 @@ public class UploadFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_upload, container, false);
-
-        btnlogout = layout.findViewById(R.id.main_btn_logout);
         textUsuario = layout.findViewById(R.id.main_textUsuario);
-        btnstorage = layout.findViewById(R.id.main_btn_storage);
         recyclerView = layout.findViewById(R.id.main_recycler);
 
         imageAdapter = new ImageAdapter(getActivity(),listaUp);
@@ -81,22 +77,10 @@ public class UploadFragment extends Fragment {
         });
 
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(imageAdapter);
 
-        btnlogout.setOnClickListener(v -> {
-            auth.signOut();
-            getActivity().finish();
-        });
-        TextView textemail = layout.findViewById(R.id.main_textEmail);
-        textemail.setText(auth.getCurrentUser().getEmail());
-        textUsuario.setText(auth.getCurrentUser().getDisplayName());
-
-        btnstorage.setOnClickListener(v ->{
-            Intent intent = new Intent(getActivity(), StorageActivity.class);
-            startActivity(intent);
-        });
 
         return layout;
     }

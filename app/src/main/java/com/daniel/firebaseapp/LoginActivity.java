@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         .addOnSuccessListener(o -> {
            //o -> authResult
             Toast.makeText(this,"Bem-vindo!",Toast.LENGTH_SHORT).show();
-            Intent intent  = new Intent(getApplicationContext(),MainActivity.class);
+            Intent intent  = new Intent(getApplicationContext(),NavigationActivity.class);
             startActivity(intent);
         })
         // listener de falha

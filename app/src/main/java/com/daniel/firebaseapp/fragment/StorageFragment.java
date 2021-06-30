@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.daniel.firebaseapp.R;
 import com.daniel.firebaseapp.model.Upload;
 import com.daniel.firebaseapp.util.LoadingDialog;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -44,6 +45,7 @@ public class StorageFragment extends Fragment {
     private EditText editnome;
     //firebase storage
     private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private FirebaseAuth auth = FirebaseAuth.getInstance();
     //refererencoia para o nó
     private DatabaseReference database = FirebaseDatabase.getInstance().getReference("uploads");
     public StorageFragment() {
@@ -55,6 +57,8 @@ public class StorageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        database = FirebaseDatabase.getInstance().getReference("uploads").child(auth.getUid());
         View layout =  inflater.inflate(R.layout.fragment_storage, container, false);
         btnupload = layout.findViewById(R.id.storage_btn_upload);
         imageView =  layout.findViewById(R.id.storage_imagem_cel);
