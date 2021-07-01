@@ -6,6 +6,14 @@ public class User {
         private  String email;
         private  String nome;
         private  String photoUrl;
+        private boolean receiveRequest;
+        public void setReceiveRequest(boolean b){
+            this.receiveRequest = b;
+        }
+
+        public boolean getReceiveRequest(){
+            return receiveRequest;
+        }
 
         public User(){
 
@@ -49,5 +57,5 @@ public class User {
             this.photoUrl = photoUrl;
         }
 
-
+       public boolean equals(User u){ return  this.id.equals(u.getId()); }
 }
