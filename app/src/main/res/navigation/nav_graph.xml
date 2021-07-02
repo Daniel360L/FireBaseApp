@@ -10,10 +10,7 @@
     <fragment
         android:id="@+id/nav_menu_main"
         android:name="com.daniel.firebaseapp.fragment.MainFragment"
-        tools:layout="@layout/fragment_main"
-        >
-
-    </fragment>
+        tools:layout="@layout/fragment_main"></fragment>
 
     <fragment
         android:id="@+id/nav_menu_listaUp"
@@ -24,4 +21,11 @@
         android:id="@+id/nav_menu_cadastro"
         android:name="com.daniel.firebaseapp.fragment.StorageFragment"
         tools:layout="@layout/fragment_storage"></fragment>
+
+    <fragment
+        android:id="@+id/nav_menu_notification"
+        android:name="com.daniel.firebaseapp.fragment.NotificationFragment"
+        tools:layout="@layout/fragment_notification"></fragment>
+
+
 </navigation>

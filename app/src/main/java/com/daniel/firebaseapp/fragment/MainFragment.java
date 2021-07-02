@@ -24,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +38,7 @@ public class MainFragment extends Fragment {
     private ArrayList<User> list = new ArrayList<>();
     private DatabaseReference request = FirebaseDatabase.getInstance().getReference("requests");
     private  User userLogged;
-    private int cont;
+
     public MainFragment() {
         // Required empty public constructor
     }
@@ -61,7 +63,7 @@ public class MainFragment extends Fragment {
 
                 //retirar o usuario da recycler
 
-                list.remove(position);
+                list.get(position).setReceiveRequest(true);
                 userAdapter.notifyDataSetChanged();
 
                 request.child(u.getId()).child("receive").child(userLogged.getId()).setValue(userLogged);
@@ -82,26 +84,40 @@ public class MainFragment extends Fragment {
     }
 
     public void getUserDatabase(){
-        //retorna os valores do nó
-        userReference.addValueEventListener(new ValueEventListener() {
+        //armazenar usuários que já foram solicitados
+        Map<String,User> mapUsersReq  = new HashMap<String, User>();
+       request.child(userLogged.getId()).child("send")// pegando o id
+        .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list.clear();
-                for (DataSnapshot filho :snapshot.getChildren()){
-                    User u =  filho.getValue(User.class);
-                    //comparar com usuario logado
-                    if(!userLogged.equals(u)){
-                        if(cont%2==0){
-                            u.setReceiveRequest(true);
-                        }else {
-                            u.setReceiveRequest(false);
+                //snapshot estão os nós
+                for(DataSnapshot no : snapshot.getChildren()){
+                    User user = no.getValue(User.class);
+                    mapUsersReq.put(user.getId(),user);//adicionado usuario no Hash
+                }
+                //ler no usuario
+                userReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        list.clear();
+                        for(DataSnapshot no : snapshot.getChildren()){
+                            User user = no.getValue(User.class);
+                            if(mapUsersReq.containsKey(user.getId()) ){
+                                user.setReceiveRequest(true);
+                            }
+                            if(!userLogged.equals(user)){
+                                list.add(user);
+                            }
                         }
-                        list.add(u);
-                        cont++;
+                        userAdapter.notifyDataSetChanged();
                     }
 
-                }
-                userAdapter.notifyDataSetChanged();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
             }
 
             @Override
@@ -110,4 +126,5 @@ public class MainFragment extends Fragment {
             }
         });
     }
+
 }
