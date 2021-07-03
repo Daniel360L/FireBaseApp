@@ -21,6 +21,7 @@ import com.daniel.firebaseapp.MainActivity;
 import com.daniel.firebaseapp.NavigationActivity;
 import com.daniel.firebaseapp.R;
 import com.daniel.firebaseapp.UpdateActivity;
+import com.daniel.firebaseapp.util.NotificationReceiver;
 
 import static com.daniel.firebaseapp.util.App.CHANNEL_1;
 
@@ -58,6 +59,17 @@ public class NotificationFragment extends Fragment {
                     .setGraph(R.navigation.nav_graph)
                     .setDestination(R.id.nav_menu_listaUp)
                     .createPendingIntent();
+
+            //criar broadcast receiver
+            //ele deve ser ativado explicitamente,precisa ser ativado
+            //não deve durar mais de 10 seg;
+            Intent broadcastIntent = new Intent(getContext(), NotificationReceiver.class);
+            broadcastIntent.putExtra("toast",msn);
+
+
+            PendingIntent actionIntent = PendingIntent
+                    .getBroadcast(getContext(),0,broadcastIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
 
             //Criar notificação
             Notification notification = new NotificationCompat.Builder(getContext(),CHANNEL_1)

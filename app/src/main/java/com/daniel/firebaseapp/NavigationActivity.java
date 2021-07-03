@@ -7,11 +7,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daniel.firebaseapp.util.NotificationService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -46,6 +48,9 @@ public class NavigationActivity extends AppCompatActivity {
         //juntar navController com navView(menu)
         //configurada troca de tela
         NavigationUI.setupWithNavController(navigationView,navController);
+
+        Intent service = new Intent(getApplicationContext(), NotificationService.class);
+        getApplicationContext().startService(service);
 
 
 
